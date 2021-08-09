@@ -1,0 +1,133 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Product Detail{% endblock title %}
+{% block main-content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-sm-6 text-center align-self-center">
+            <img src="{{product.product_image.url}}" alt="" class="img-fluid img-thumbnail" width="250" height="80">
+        </div>
+        <div class="col-sm-5 offset-sm-1">
+            <h2>Product Title: {{product.title}}</h2>
+            <hr>
+            <p>Product Description: {{product.description}}</p> <br>
+            <h4>Rs. {{product.discounted_price}} <small
+                    class="fw-light text-decoration-line-through">{{product.selling_price}}</small></h4> <br>
+            {% if request.user.is_authenticated %}
+
+            {% if item_already_in_cart %}
+            <a href="{% url 'showcart' %}" class="btn btn-warning shadow px-5 py-2 ms-4">Go To Cart</a>
+            {% else %}
+            <form action="/add-to-cart" class="d-inline">
+                {% csrf_token %}
+                <input type="hidden" name="prod_id" value={{product.id}} id="prod_id">
+                <button type="submit" class="btn btn-primary shadow px-5 py-2">Add To Cart</button>
+            </form>
+            {% endif %}
+            {% endif %}
+
+            {% if not request.user.is_authenticated %}
+            <form action="/add-to-cart" class="d-inline">
+                <input type="hidden" name="prod_id" value={{product.id}} id="prod_id">
+                <button type="submit" class="btn btn-primary shadow px-5 py-2">Add To Cart</button>
+            </form>
+            {% endif %}
+
+            <a href="{% url 'checkout' %}" class="btn btn-danger shadow px-5 py-2 ms-4">Buy Now</a>
+            <h5 class="mt-5">Available Offers</h5>
+            <ul>
+                <li>Bank Offer 5% Unlimited Cashback on Flipkart Axis Bank Credit</li>
+                <li>Special Price Get extra ₹3000 off (price inclusive of discount)</li>
+                <li>No cost EMI ₹1,667/month. Standard EMI also available</li>
+                <li>Partner Offer ₹2000 Flipkart Gift Card on Every 1000th Transaction with a new Visa Debit/Credit Card
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<h3 class="text-center my-4">Reviews and Feedback</h3>
+
+
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-center row">
+        <div class="col-md-7">
+            <form action="{% url 'review' product.id %}" method="post">
+                {% csrf_token %}
+                <p class="mb-0 text-center">Rate our Product :</p>
+
+                <div class="rating">
+                    <input type="radio" name="rating" value="5" id="5">
+                    <label for="5">☆</label>
+                    <input type="radio" name="rating" value="4" id="4">
+                    <label for="4">☆</label>
+                    <input type="radio" name="rating" value="3" id="3">
+                    <label for="3">☆</label>
+                    <input type="radio" name="rating" value="2" id="2">
+                    <label for="2">☆</label>
+                    <input type="radio" name="rating" value="1" id="1">
+                    <label for="1">☆</label>
+                </div>
+                <div class="form-group">
+                    <p class="my-2 text-center">Comments</p>
+                    <textarea class="form-control" name="comment" id="comment" rows="4"></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="submit" value="submit" class="btn btn-primary  my-4">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-center row">
+        {% for r in review_user %}
+        <div class="col-md-8">
+            <div class="d-flex flex-column comment-section">
+                <div class="bg-white p-2">
+                    <div class="d-flex flex-row user-info"><img class="rounded-circle"
+                            src="https://i.imgur.com/RpzrMR2.jpg" width="40">
+                        <div class="d-flex flex-column justify-content-start ml-2"><span
+                                class="d-block font-weight-bold name">{{r.user}}</span><span
+                                class="date text-black-50">Rating - {{r.rating}}</span></div>
+                    </div>
+                    <div class="mt-2">
+                        <p class="comment-text">{{r.comments}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% for r in review %}
+        <div class="col-md-8">
+            <div class="d-flex flex-column comment-section">
+                <div class="bg-white p-2">
+                    <div class="d-flex flex-row user-info"><img class="rounded-circle"
+                            src="https://i.imgur.com/RpzrMR2.jpg" width="40">
+                        <div class="d-flex flex-column justify-content-start ml-2"><span
+                                class="d-block font-weight-bold name">{{r.user}}</span><span
+                                class="date text-black-50">Rating - {{r.rating}}</span></div>
+                    </div>
+                    <div class="mt-2">
+                        <p class="comment-text">{{r.comments}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+
+
+{% endblock main-content %}

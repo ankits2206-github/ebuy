@@ -1,0 +1,35 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}{{text}}{% endblock title %}
+{% block main-content %}
+
+{% if result %}
+<h2 class="text-center mt-5">Search Results For - {{text}}</h2>
+{% else %}
+<h2 class="text-center mt-5">Oops!!! No Product Found For {{text}}</h2>
+{% endif %}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        {% if result %}
+        {% for product in result %}
+        <div class="col-sm-4 text-center mb-4">
+            <a href="{% url 'product-detail' product.id %}" class="btn">
+                <div class="item">
+                    <img src="{{product.product_image.url}}" alt="mobile image" height="300">
+                    <div class="fw-bold">{{product.title}}</div>
+                    <div class="fw-bold">Rs. {{product.discounted_price}}
+                        <small class="fw-light text-decoration-line-through">{{product.selling_price}}</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+        {% else %}
+        <img src="https://cdn.dribbble.com/users/2382015/screenshots/6065978/no_result.gif" height="700" width="600"alt="">
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock main-content %}
